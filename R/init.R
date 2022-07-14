@@ -77,6 +77,7 @@ multi_line_plot <- function(plotDT, var.name, num.lines,
   p <- p +
     facet_wrap(vars(group), ncol = 1, scales = 'free_x') +
     labs(x = xlab, y = ylab, title = title) +
+    scale_color_manual(values = colour) +
     theme(
       plot.title = element_text(hjust = 0.5),
       strip.background = element_blank(),

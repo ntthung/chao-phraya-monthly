@@ -851,7 +851,7 @@ Comparing skill scores, mass balance, and the count of months with negative flow
 p1cvQ <- cv_mb(p1tar, p1pcAllseasons$l25, p1cvFolds, 1750, 
         lambda = 25, 
         log.trans = NULL, force.standardize = TRUE,
-        return.type = 'Q')[season != 'Ann']
+        return.type = 'Q')[season != 'Ann'][order(rep, year, season)]
 numYears <- length(p1years)
 ZMat <- matrix(seq_len(numYears * 12), nrow = numYears)
 p1cvQScores <- p1cvQ[, {
@@ -862,10 +862,10 @@ p1cvQScores <- p1cvQ[, {
 }, by = rep
   ][, lapply(.SD, tbrm), .SDcols = c('R2', 'RE', 'CE')]
 
-w4cvQ <- cv_mb(w4tar, w4pcAllseasons$l25, w4cvFolds, 1750, 
+w4cvQ <- cv_mb(w4tar, w4pcAllseasons$l10, w4cvFolds, 1750, 
         lambda = 10, 
         log.trans = NULL, force.standardize = TRUE,
-        return.type = 'Q')[season != 'Ann']
+        return.type = 'Q')[season != 'Ann'][order(rep, year, season)]
 numYears <- length(w4years)
 ZMat <- matrix(seq_len(numYears * 12), nrow = numYears)
 w4cvQScores <- w4cvQ[, {
@@ -876,10 +876,10 @@ w4cvQScores <- w4cvQ[, {
 }, by = rep
   ][, lapply(.SD, tbrm), .SDcols = c('R2', 'RE', 'CE')]
 
-y17cvQ <- cv_mb(y17tar, y17pcAllseasons$l25, y17cvFolds, 1750, 
+y17cvQ <- cv_mb(y17tar, y17pcAllseasons$l0, y17cvFolds, 1750, 
         lambda = 0, 
         log.trans = NULL, force.standardize = TRUE,
-        return.type = 'Q')[season != 'Ann']
+        return.type = 'Q')[season != 'Ann'][order(rep, year, season)]
 numYears <- length(y17years)
 ZMat <- matrix(seq_len(numYears * 12), nrow = numYears)
 y17cvQScores <- y17cvQ[, {
@@ -890,10 +890,10 @@ y17cvQScores <- y17cvQ[, {
 }, by = rep
   ][, lapply(.SD, tbrm), .SDcols = c('R2', 'RE', 'CE')]
 
-n1cvQ <- cv_mb(n1tar, n1pcAllseasons$l25, n1cvFolds, 1750, 
+n1cvQ <- cv_mb(n1tar, n1pcAllseasons$l10, n1cvFolds, 1750, 
         lambda = 10, 
         log.trans = NULL, force.standardize = TRUE,
-        return.type = 'Q')[season != 'Ann']
+        return.type = 'Q')[season != 'Ann'][order(rep, year, season)]
 numYears <- length(n1years)
 ZMat <- matrix(seq_len(numYears * 12), nrow = numYears)
 n1cvQScores <- n1cvQ[, {
@@ -940,6 +940,7 @@ scoreQ <- rbindlist(
   list(p1 = p1cvQScores, w4 = w4cvQScores, y17 = y17cvQScores, n1 = n1cvQScores),
   idcol = 'station') |> 
   roundDT()
+scoreQ[, station := factor(station, stations)]
 
 # Merged data of instrumental period for plotting
 instDT <- merge(rec, inst, by = c('station', 'year', 'month', 'month2'), suffixes = c('rec', 'obs'))
@@ -1047,9 +1048,28 @@ wrap_plots(g1) + p3 + p4 + plot_layout(ncol = 1, heights = c(1, 0.4, 0.6))
 # ggsave('inst_period.pdf', width = 7, height = 8.5)
 ```
 
+**Figure S1** - Close-up time series comparison
+
+```{r, fig.width=8, fig.height=8}
+p1 <- multi_line_plot(instDT['p1'], c('Qrec', 'Qobs'), 
+                      3, title = 'Ping', colour = c('darkorange', 'steelblue')) 
+p2 <- multi_line_plot(instDT['w4'], c('Qrec', 'Qobs'), 
+                      1, title = 'Wang', colour = c('darkorange', 'steelblue')) 
+p3 <- multi_line_plot(instDT['y17'], c('Qrec', 'Qobs'), 
+                      1, title = 'Yom', colour = c('darkorange', 'steelblue'))
+p4 <- multi_line_plot(instDT['n1'], c('Qrec', 'Qobs'), 
+                      3, title = 'Nan', colour = c('darkorange', 'steelblue'))
+
+pl <- p1 + p2 + p3 + p4 &
+  theme(plot.title = element_text(color = 'firebrick'))
+pl + plot_layout(ncol = 1, heights = c(3, 1, 1, 3), guides = 'collect')
+
+# ggsave('inst_period_zoom.pdf', width = 7, height = 8)
+```
+
 ## Full monthly time series
 
-**Figure S1**
+**Figure S2**
 
 ```{r, fig.width=8, fig.height=7}
 nr <- 2
@@ -1069,7 +1089,7 @@ p1 + p2 + p3 + p4 + plot_layout(ncol = 1)
 
 @wasson2021 reported a flood in 1831 that caused floodplain stripping along the Ping River, consistent with historical record. Our reconstruction shows extreme high flow in September 1831; this was the seventh highest monthly flow among the 3,048 months in the reconstruction.
 
-**Figure S2**
+**Figure S3**
 
 ```{r, fig.width=8, fig.height=4}
 p1sub <- rec['p1'
@@ -1165,7 +1185,7 @@ plot_ssi(ssi6)
 # ggsave('ssi.pdf', width = 7, height = 4.5)
 ```
 
-**Figure S2 for SSI**<sub>1</sub>
+**Figure S4 for SSI**<sub>1</sub>
 
 ```{r, fig.width=8, fig.height=4.5}
 ssi1 <- rec[!is.na(ssi1), .(station, year, month, ssi = ssi1)]
@@ -1177,7 +1197,7 @@ plot_ssi(ssi1)
 # ggsave('ssi1.pdf', width = 7, height = 4.5)
 ```
 
-**Figure S3 for SSI**<sub>12</sub>
+**Figure S5 for SSI**<sub>12</sub>
 
 ```{r, fig.width=8, fig.height=4.5}
 ssi12 <- rec[!is.na(ssi12), .(station, year, month, ssi = ssi12)]

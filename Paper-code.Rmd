@@ -4,7 +4,7 @@ author: "Hung Nguyen"
 date: "`r Sys.Date()`"
 output: 
   rmdformats::readthedown:
-    toc_depth: 3
+    toc_depth: 4
 bibliography: references.bib
 ---
 
@@ -14,7 +14,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 # Introduction and Preparations
 
-This document details the process of producing the results presented in *Droughts, Pluvials, and Wet Season Timing across the Chao Phraya River Basin: a 254-Year Monthly Reconstruction from Tree Rings and δ*<sup>18</sup>O by Nguyen et al. (2022).
+This document details the process of producing the results presented in *Droughts, Pluvials, and Wet Season Timing across the Chao Phraya River Basin: a 254-Year Monthly Reconstruction from Tree Rings and $\delta^{18}O$* by Nguyen et al. (2022).
 
 To reproduce the results, please do the following:
 
@@ -96,7 +96,7 @@ ggplot(inst) +
     breaks = seq(1920, 2000, 5), 
     minor_breaks = 1920:2004,
     labels = skip_label(2),
-    guide = guide_prism_minor()) +
+    guide = guide_prism_minor()) + 
   labs(x = NULL, y = 'Q [million m\u00b3]') +
   panel_border('black', 0.2) 
 ```
@@ -165,28 +165,28 @@ p1 / p2 +
 
 ## Tree Ring -- Streamflow Correlations
 
-### P.1
+### Ping
 
 ```{r, fig.width=8, fig.height=14}
 rhoP1 <- cor_Q_proxy(p1tar)
 plot_cor_station(rhoP1, 'P.1')
 ```
 
-### W.4A
+### Wang
 
 ```{r, fig.width=8, fig.height=14}
 rhoW4 <- cor_Q_proxy(w4tar)
 plot_cor_station(rhoW4, 'W.4A')
 ```
 
-### Y.17A
+### Yom
 
 ```{r, fig.width=8, fig.height=14}
 rhoY17 <- cor_Q_proxy(y17tar)
 plot_cor_station(rhoY17, 'Y.17A')
 ```
 
-### N.1
+### Nan
 
 ```{r, fig.width=8, fig.height=14}
 rhoN1 <- cor_Q_proxy(n1tar)
@@ -290,7 +290,7 @@ names(lambdas) <- paste0('l', lambdas)
 lambdaChars <- sprintf('%02d', lambdas)
 ```
 
-### P.1
+### Ping
 
 #### Check GA convergence
 
@@ -432,7 +432,7 @@ p1rec[Q < 0][order(lambda)][, .N, by = lambda]
 
 Comparing skill scores, mass balance, and the count of months with negative flow, we chose $\lambda = 25$.
 
-### W.4A
+### Wang
 
 #### Check GA convergence
 
@@ -569,7 +569,7 @@ w4rec[Q < 0][order(lambda)][, .N, by = lambda]
 
 Comparing skill scores, mass balance, and the count of months with negative flow, we chose $\lambda = 10$.
 
-### Y.17A
+### Yom
 
 #### Check GA convergence
 
@@ -706,7 +706,7 @@ y17rec[Q < 0][order(lambda)][, .N, by = lambda]
 
 Comparing skill scores, mass balance, and the count of months with negative flow, we chose $\lambda = 0$.
 
-### N.1
+### Nan
 
 #### Check GA convergence
 
@@ -955,7 +955,7 @@ First we create the examples of years with two peaks in panel b.
 ```{r}
 y2p <- data.table(
   station = c('p1', 'n1'),
-  year = c(1923, 1936))
+  year = c(1923, 2000))
 rec2pMonth <- merge(instDT, y2p, by = c('year', 'station'))
 rec2pMonth[, station := factor(fifelse(station == 'p1', 'Ping River', 'Nan River'),
                                levels = c('Ping River', 'Nan River'))]
@@ -1281,7 +1281,7 @@ Qcumu2 <- copy(Qcumu[station == 'y17' & start < 8 & za < 0]
 
 **Figure 4**
 
-```{r, fig.width=7, fig.height=6.5}
+```{r, fig.width=8, fig.height=6.5}
 p1 <- ggplot(peakSeason) +
   geom_point(
     aes(startChar2, rank, fill = za), 

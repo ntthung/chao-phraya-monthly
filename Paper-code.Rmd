@@ -14,7 +14,9 @@ knitr::opts_chunk$set(echo = TRUE)
 
 # Introduction and Preparations
 
-This document details the process of producing the results presented in *Droughts, Pluvials, and Wet Season Timing across the Chao Phraya River Basin: a 254-Year Monthly Reconstruction from Tree Rings and $\delta^{18}O$* by Nguyen et al. (2022).
+This document details the process of producing the results presented in the following paper:
+
+Nguyen, H. T. T., Galelli, S., Xu, C., & Buckley, B. M. (2022). Droughts, Pluvials, and Wet Season Timing across the Chao Phraya River Basin: A 254-Year Monthly Reconstruction from Tree Rings and δ<sup>18</sup>O. *Geophysical Research Letters*. https://doi.org/10.1029/2022GL100442
 
 To reproduce the results, please do the following:
 
@@ -44,7 +46,7 @@ library(SPEI)       # Calculating drought index
 -   Follow the written details below and run the code chunks one by one.
 -   The main reconstruction step with `mbr` should be run on a computing clusters. It still works on a desktop or laptop, but will take much longer, so you may need to change the genetic algorithm settings (more explanations later).
 
-For quick access to the final results please see the `.csv` files in `results/`. This folder is organized by the tributaries.
+For quick access to the final results please see the `.csv` files in `results/`. In this folder, the GA outputs are organized by subfolders for the tributaries, and the final reconstruction results are in `results/` itself.
 
 The code utilities to support the main code are stored in the folder `R/`. We need to load them first before running the main code.
 
